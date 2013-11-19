@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<script type="text/javascript" src="/resources/js/jquery-2.0.3.js"></script>
+	</head>
+	<body>
+		<input type="text" placeholder="입력하소서!" id="inputBox"/>
+		<button type="submit" id="submitButton">추가</button>
+		
+		<ul id="messageList">
+			#foreach($message in $messageList)
+			<li>
+				<div>id : $!message.id</div>
+				<div>status : $!message.status</div>
+				<div>text : $!message.text</div>
+				<div>writer : $!message.writer</div>
+				<button class="delete" data-id="$!message.id">삭제</button>
+			</li>
+			#end
+		
+		</ul>
+		
+	</body>
+	<script type="text/javascript">
+	
+	jQuery("#submitButton").click(function(e){
+		e.preventDefault();
+		var message = {
+			text	: $("#inputBox").val(),
+			status	: "e",
+			writer  : "jiyeon"
+		};
+
+		jQuery.ajax({
+		  type			: "POST",
+		  url			: "/app/api.json",
+		  data			: JSON.stringify(message),
+		  contentType	: "application/json; charset=utf-8",
+		  dataType		: "json"
+		}).done(function(){
+			location.reload();
+		});
+	});
+	
+	jQuery(".delete").click(function(e){
+		var target = $(e.currentTarget);
+		var id = target.data("id");
+		jQuery.ajax("/app/api/" + id + ".json" , {
+			type : "DELETE"
+		}).done(function(){
+			location.reload();
+		});
+	});
+	
+	</script>
+</html>
